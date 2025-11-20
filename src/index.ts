@@ -135,8 +135,8 @@ for (const item of documasterAccessListItems) {
 		}
 	}
 
-  // Logg resultatet for nåværende gruppe
-  logger.info("Finished processing group {sharePointGroupName}. Summary: {@summary}", sharePointGroupName, groupResult)
+	// Logg resultatet for nåværende gruppe
+	logger.info("Finished processing group {sharePointGroupName}. Summary: {@summary}", sharePointGroupName, groupResult)
 
 	logger.info("Finished processing group {sharePointGroupName}", sharePointGroupName)
 }

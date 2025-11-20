@@ -35,35 +35,35 @@ export const getUserByUpn = async (email: string): Promise<User | null> => {
 }
 
 export const addMemberToGroup = async (groupId: string, userId: string): Promise<void> => {
-  const accessToken = await defaultAzureCredential.getToken(graphScope)
-  const response = await fetch(`https://graph.microsoft.com/v1.0/groups/${groupId}/members/$ref`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${accessToken?.token}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      "@odata.id": `https://graph.microsoft.com/v1.0/users/${userId}`
-    })
-  })
+	const accessToken = await defaultAzureCredential.getToken(graphScope)
+	const response = await fetch(`https://graph.microsoft.com/v1.0/groups/${groupId}/members/$ref`, {
+		method: "POST",
+		headers: {
+			Authorization: `Bearer ${accessToken?.token}`,
+			"Content-Type": "application/json"
+		},
+		body: JSON.stringify({
+			"@odata.id": `https://graph.microsoft.com/v1.0/users/${userId}`
+		})
+	})
 
-  if (!response.ok) {
-    const errorData = await response.json()
-    throw new Error(`Failed to add user '${userId}' to group '${groupId}': ${response.status} ${response.statusText} - ${JSON.stringify(errorData, null, 2)}`)
-  }
+	if (!response.ok) {
+		const errorData = await response.json()
+		throw new Error(`Failed to add user '${userId}' to group '${groupId}': ${response.status} ${response.statusText} - ${JSON.stringify(errorData, null, 2)}`)
+	}
 }
 
 export const removeMemberFromGroup = async (groupId: string, userId: string): Promise<void> => {
-  const accessToken = await defaultAzureCredential.getToken(graphScope)
-  const response = await fetch(`https://graph.microsoft.com/v1.0/groups/${groupId}/members/${userId}/$ref`, {
-    method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${accessToken?.token}`
-    }
-  })
+	const accessToken = await defaultAzureCredential.getToken(graphScope)
+	const response = await fetch(`https://graph.microsoft.com/v1.0/groups/${groupId}/members/${userId}/$ref`, {
+		method: "DELETE",
+		headers: {
+			Authorization: `Bearer ${accessToken?.token}`
+		}
+	})
 
-  if (!response.ok) {
-    const errorData = await response.json()
-    throw new Error(`Failed to remove user '${userId}' from group '${groupId}': ${response.status} ${response.statusText} - ${JSON.stringify(errorData, null, 2)}`)
-  }
+	if (!response.ok) {
+		const errorData = await response.json()
+		throw new Error(`Failed to remove user '${userId}' from group '${groupId}': ${response.status} ${response.statusText} - ${JSON.stringify(errorData, null, 2)}`)
+	}
 }
