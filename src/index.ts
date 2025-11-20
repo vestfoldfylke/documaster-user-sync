@@ -58,7 +58,7 @@ for (const item of documasterAccessListItems) {
 	const entraGroupId = GROUP_MAPPINGS[sharePointGroupName]
 
 	if (!entraGroupId) {
-		logger.warn(`No AzureADGroupId mapping found for SharePoint group name: {sharePointGroupName}. Skipping item with ID: {item.id}`, sharePointGroupName, item.id)
+		logger.warn(`No AzureADGroupId mapping found for SharePoint group name: {sharePointGroupName}. Skipping item with ID: {itemId}`, sharePointGroupName, item.id)
 		continue
 	}
 
@@ -89,8 +89,8 @@ for (const item of documasterAccessListItems) {
 	const usersToRemove = entraGroupMembers.filter((entraUser) => {
 		return !item.fields.Hartilgang.some((spUser) => spUser.Email.toLowerCase() === entraUser.mail?.toLowerCase())
 	})
-	logger.info("Found {count} users to add to Entra group {entraGroupId}", usersToAdd.length, entraGroupId)
-	logger.info("Found {count} users to remove from Entra group {entraGroupId}", usersToRemove.length, entraGroupId)
+	logger.info("Found {count} users in Sharepoint list to add to Entra group {entraGroupId}", usersToAdd.length, entraGroupId)
+	logger.info("Found {count} users in Entra group {entraGroupId} to remove (not in Sharepoint list)", usersToRemove.length, entraGroupId)
 
 	// Legg til brukere som mangler i Entra-gruppen
 	for (const user of usersToAdd) {
@@ -134,6 +134,9 @@ for (const item of documasterAccessListItems) {
 			logger.errorException(error, "Failed to remove user {email} from Entra group {entraGroupId}", user.mail, entraGroupId)
 		}
 	}
+
+  // Logg resultatet for nåværende gruppe
+  logger.info("Finished processing group {sharePointGroupName}. Summary: {@summary}", sharePointGroupName, groupResult)
 
 	logger.info("Finished processing group {sharePointGroupName}", sharePointGroupName)
 }
