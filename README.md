@@ -4,7 +4,7 @@ Script som håndterer brukersynk i Documaster
 ## Flyt
 - Hent alle rader i Sharepoint-liste (Documaster tilgang)
   - Hver rad representerer en gruppe i EntraID
-  - Kolonner som kreves er Title og Har tilgang (multiple people picker)
+  - Kolonner som kreves er `Title` og `Har tilgang` (multiple people picker)
 - For hver rad/item:
   - Hent korrekt Entra gruppeid ved oppslag i GROUP_MAPPINGS fra env (bruker item.title som nøkkel, og får tilbake objectId for gruppe i Entra)
   - Hent alle eksisterende gruppemedlemmer fra EntraId
