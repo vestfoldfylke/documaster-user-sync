@@ -24,6 +24,7 @@ Script som håndterer brukersynk i Documaster
 ## Hvordan sette opp scriptet?
 1. Klon ned eller deploy koden der det skal kjøres
   - `git clone <repo>`
+  - `npm i`
   - `npm run build`
 1. Opprett en .env fil på rot med følgende innhold
 ```bash
