@@ -1,30 +1,3 @@
-/*
-Flyt
-  - Hent alle rader fra Sharepoint-liste som arkivet styrer
-    ○ En rad representerer en gruppe i Entra som også er synket over i Documaster
-    ○ Kolonner som brukes av Logic App
-      § Navn / Tittel (et forståelig navn på gruppa)
-      § Personer som har / skal ha tilgang (multiple people picker)
-  - For hver rad / gruppe:
-    ○ Finn korrekt id for gruppa basert på gruppe-mapping (oppslag på tittel) i Logic appen
-    ○ Hent gruppemedlemmer fra Entra (basert på groupId)
-    ○ For hver person i "har tilgang" kolonnen på nåværende gruppe:
-      § Finnes personen allerede i Entra-gruppen?
-        □ Ja: Ok, hopp over
-        □ Nei:
-          ® Try: Legg til i Entra-gruppen
-          ® Catch: brukeren finnes ikke i Entra lenger
-            ◊ Fjern brukeren fra Sharepoint-listen (eller legg de til i en liste over de som må fjernes, og bruk denne også i steget under)
-        
-    ○ For hver person i Entra-gruppen
-      § Finnes personen i "har tilgang" kolonnen?
-        □ Ja: Ok, hopp over
-        □ Nei: Fjern brukeren fra Entra-gruppen
-  - Done
-
-
-*/
-
 import { writeFileSync } from "node:fs"
 import type { User } from "@microsoft/microsoft-graph-types"
 import { logger } from "@vestfoldfylke/loglady"
@@ -38,7 +11,7 @@ const logErrorAndExit = async (message: string, error: unknown) => {
 	process.exit(1)
 }
 
-logger.info("HAALALALALALA")
+logger.info("Starting Documaster user sync process")
 
 let documasterAccessListItems: DocumasterGraphListItem[] = []
 try {
@@ -48,6 +21,14 @@ try {
 	}
 } catch (error) {
 	await logErrorAndExit("Failed to fetch Documaster access list items from Sharepoint", error)
+}
+
+logger.info("Fetched {itemCount} items from Documaster access list", documasterAccessListItems.length)
+const totalGroups = Object.keys(GROUP_MAPPINGS).length
+logger.info("Processing {totalGroups} groups based on GROUP_MAPPINGS configuration", totalGroups)
+
+if (documasterAccessListItems.length !== totalGroups) {
+	logger.warn("Number of items in Documaster access list ({itemCount}) does not match number of configured groups in GROUP_MAPPINGS ({totalGroups})", documasterAccessListItems.length, totalGroups)
 }
 
 writeFileSync("./ignore/debug-documaster-list-items.json", JSON.stringify(documasterAccessListItems, null, 2))
@@ -137,8 +118,6 @@ for (const item of documasterAccessListItems) {
 
 	// Logg resultatet for nåværende gruppe
 	logger.info("Finished processing group {sharePointGroupName}. Summary: {@summary}", sharePointGroupName, groupResult)
-
-	logger.info("Finished processing group {sharePointGroupName}", sharePointGroupName)
 }
 
 logger.info("All groups processed, flushing logs and exiting.")
