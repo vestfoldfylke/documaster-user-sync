@@ -64,11 +64,16 @@ for (const item of documasterAccessListItems) {
 	}
 	logger.info("Fetched {memberCount} members from Entra group {entraGroupId}", entraGroupMembers.length, entraGroupId)
 	logger.info("Finding users to add and remove")
-	const usersToAdd = item.fields.Hartilgang.filter((spUser) => {
+
+	// Hvis det ikke er noen brukere i Sharepoint-listen, dukker kolonnen opp i responsen. Skal vi da tolke det som at ingen skal ha tilgang?
+	const usersInSharepoint = item.fields.Hartilgang && item.fields.Hartilgang.length > 0 ? item.fields.Hartilgang : []
+	logger.info("Found {count} users in Sharepoint list for group {sharePointGroupName}", usersInSharepoint.length, sharePointGroupName)
+
+	const usersToAdd = usersInSharepoint.filter((spUser) => {
 		return !entraGroupMembers.some((entraUser) => entraUser.mail?.toLowerCase() === spUser.Email.toLowerCase())
 	})
 	const usersToRemove = entraGroupMembers.filter((entraUser) => {
-		return !item.fields.Hartilgang.some((spUser) => spUser.Email.toLowerCase() === entraUser.mail?.toLowerCase())
+		return !usersInSharepoint.some((spUser) => spUser.Email.toLowerCase() === entraUser.mail?.toLowerCase())
 	})
 	logger.info("Found {count} users in Sharepoint list to add to Entra group {entraGroupId}", usersToAdd.length, entraGroupId)
 	logger.info("Found {count} users in Entra group {entraGroupId} to remove (not in Sharepoint list)", usersToRemove.length, entraGroupId)

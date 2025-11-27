@@ -3,7 +3,7 @@ import type * as GraphTypes from "@microsoft/microsoft-graph-types"
 export type DocumasterGraphListItem = GraphTypes.ListItem & {
 	fields: {
 		Title: string
-		Hartilgang: {
+		Hartilgang?: {
 			LookupId: number
 			LookupValue: string
 			Email: string
