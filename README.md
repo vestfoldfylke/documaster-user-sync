@@ -54,6 +54,7 @@ SP_ROW_ARKIV="Arkivtjenesten;<en guid>"
 1. Gi app registration tilgang til Sharepoint siten der Documaster-tilgang listen ligger
   - Fordi vi bruker Sites.Selected API permission, [må vi også sette permission på sharepoint-siten](https://learn.microsoft.com/en-us/graph/api/site-post-permissions?view=graph-rest-1.0&tabs=http)
   - Finn en voksen som har rollen Sharepoint-admin (eller er eier av Sharepoint-siten) OG en app med mulighet for å kjøre delegated Sites.FullControl.All (f. eks Graph explorer)
+    - HUSK AT brukeren som kjører graph-kallet må være eier på siten
   - Finn site-id ved f. eks å kjøre `GET https://<orgname>.sharepoint.com/sites/<sitename>/_api/site/id`
   - Be den voksne kjøre POST til følgende url, og med følgende payload:
   ```
